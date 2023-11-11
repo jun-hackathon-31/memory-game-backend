@@ -4,6 +4,8 @@ import hackathon.code.dto.RoundCreateDTO;
 import hackathon.code.dto.RoundDTO;
 import hackathon.code.exception.ResourceNotFoundException;
 import hackathon.code.mapper.RoundMapper;
+import hackathon.code.model.Leader;
+import hackathon.code.repository.LeaderRepository;
 import hackathon.code.repository.RoundRepository;
 import hackathon.code.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,9 +19,18 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import static hackathon.code.controller.RoundsController.ROUND_CONTROLLER_PATH;
 
@@ -36,6 +47,8 @@ public class RoundsController {
     private final RoundRepository roundRepository;
 
     private final UserRepository userRepository;
+
+    private final LeaderRepository leaderRepository;
 
     private final RoundMapper roundMapper;
 
@@ -88,6 +101,28 @@ public class RoundsController {
 
         round.setGamer(gamer);
         roundRepository.save(round);
+
+        Optional<Leader> leader = leaderRepository.findAll().stream()
+                .filter(l -> l.getUser().getName().equals(gamerName))
+                .findAny();
+
+        if (leader.isEmpty()) {
+            var newLeader = new Leader();
+            newLeader.setUser(gamer);
+            newLeader.setMoves(roundData.getMoves());
+            leaderRepository.save(newLeader);
+        } else {
+            var rounds = roundRepository.findAll();
+            var bestResult = rounds.stream()
+                    .filter(r -> r.getGamer().equals(gamer))
+                    .sorted(Comparator.comparingInt(r -> r.getMoves()))
+                    .map(r -> r.getMoves())
+                    .findFirst()
+                    .orElse(0);
+            leader.get().setMoves(bestResult);
+            leaderRepository.save(leader.get());
+        }
+
 
         return roundMapper.map(round);
     }

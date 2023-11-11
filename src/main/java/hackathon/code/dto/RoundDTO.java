@@ -1,6 +1,5 @@
 package hackathon.code.dto;
 
-import hackathon.code.model.User;
 import lombok.Getter;
 import lombok.Setter;
 
