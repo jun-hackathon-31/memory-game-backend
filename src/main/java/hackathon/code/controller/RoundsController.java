@@ -5,6 +5,7 @@ import hackathon.code.dto.RoundDTO;
 import hackathon.code.exception.ResourceNotFoundException;
 import hackathon.code.mapper.RoundMapper;
 import hackathon.code.model.Leader;
+import hackathon.code.model.Round;
 import hackathon.code.repository.LeaderRepository;
 import hackathon.code.repository.RoundRepository;
 import hackathon.code.repository.UserRepository;
@@ -115,8 +116,8 @@ public class RoundsController {
             var rounds = roundRepository.findAll();
             var bestResult = rounds.stream()
                     .filter(r -> r.getGamer().equals(gamer))
-                    .sorted(Comparator.comparingInt(r -> r.getMoves()))
-                    .map(r -> r.getMoves())
+                    .sorted(Comparator.comparingInt(Round::getMoves))
+                    .map(Round::getMoves)
                     .findFirst()
                     .orElse(0);
             leader.get().setMoves(bestResult);

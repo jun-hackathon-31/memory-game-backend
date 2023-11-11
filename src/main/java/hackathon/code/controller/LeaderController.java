@@ -2,6 +2,7 @@ package hackathon.code.controller;
 
 import hackathon.code.dto.LeaderDTO;
 import hackathon.code.mapper.LeaderMapper;
+import hackathon.code.model.Leader;
 import hackathon.code.repository.LeaderRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -42,7 +43,7 @@ public class LeaderController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<LeaderDTO>> index() {
         var leaders = leaderRepository.findAll().stream()
-                .sorted(Comparator.comparingInt(leader -> leader.getMoves()))
+                .sorted(Comparator.comparingInt(Leader::getMoves))
                 .map(leaderMapper::map)
                 .toList();
 
