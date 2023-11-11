@@ -1,12 +1,8 @@
 package hackathon.code.controller;
 
 import hackathon.code.dto.LeaderDTO;
-import hackathon.code.dto.UserDTO;
 import hackathon.code.mapper.LeaderMapper;
-import hackathon.code.mapper.UserMapper;
 import hackathon.code.repository.LeaderRepository;
-import hackathon.code.repository.RoundRepository;
-import hackathon.code.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Comparator;
 import java.util.List;
 
-import static hackathon.code.controller.LeaderboardController.LEADERBOARD_CONTROLLER_PATH;
+import static hackathon.code.controller.LeaderController.LEADER_CONTROLLER_PATH;
 
 @RestController
-@RequestMapping("${base-url}" + LEADERBOARD_CONTROLLER_PATH)
-public class LeaderboardController {
+@RequestMapping("${base-url}" + LEADER_CONTROLLER_PATH)
+public class LeaderController {
 
-    public static final String LEADERBOARD_CONTROLLER_PATH = "/leaderboard";
+    public static final String LEADER_CONTROLLER_PATH = "/leaderboard";
 
     @Autowired
     private LeaderRepository leaderRepository;
