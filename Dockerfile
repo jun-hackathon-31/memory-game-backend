@@ -1,4 +1,4 @@
-FROM openjdk:17-oracle
+FROM gradle:7.4.2-jdk17
 
 WORKDIR /app
 
