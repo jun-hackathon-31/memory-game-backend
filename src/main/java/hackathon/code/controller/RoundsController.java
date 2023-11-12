@@ -2,10 +2,13 @@ package hackathon.code.controller;
 
 import hackathon.code.dto.RoundCreateDTO;
 import hackathon.code.dto.RoundDTO;
+import hackathon.code.dto.UserCreateDTO;
 import hackathon.code.exception.ResourceNotFoundException;
 import hackathon.code.mapper.RoundMapper;
+import hackathon.code.mapper.UserMapper;
 import hackathon.code.model.Leader;
 import hackathon.code.model.Round;
+import hackathon.code.model.User;
 import hackathon.code.repository.LeaderRepository;
 import hackathon.code.repository.RoundRepository;
 import hackathon.code.repository.UserRepository;
@@ -53,6 +56,8 @@ public class RoundsController {
 
     private final RoundMapper roundMapper;
 
+    private final UserMapper userMapper;
+
     @Operation(summary = "Get a round by its id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the round",
@@ -98,24 +103,34 @@ public class RoundsController {
         var round = roundMapper.map(roundData);
 
         var gamerName = roundData.getUserName();
-        var gamer = userRepository.findByName(gamerName).get();
+        var gamer = userRepository.findByName(gamerName);
 
-        round.setGamer(gamer);
+        if (gamer.isEmpty()) {
+            var userData = new UserCreateDTO();
+            userData.setName(gamerName);
+            var user = userMapper.map(userData);
+            userRepository.save(user);
+            round.setGamer(user);
+        } else {
+            round.setGamer(gamer.get());
+        }
         roundRepository.save(round);
 
         Optional<Leader> leader = leaderRepository.findAll().stream()
                 .filter(l -> l.getUser().getName().equals(gamerName))
                 .findAny();
 
+        var currentUser = userRepository.findByName(gamerName);
+
         if (leader.isEmpty()) {
             var newLeader = new Leader();
-            newLeader.setUser(gamer);
+            newLeader.setUser(currentUser.get());
             newLeader.setMoves(roundData.getMoves());
             leaderRepository.save(newLeader);
         } else {
             var rounds = roundRepository.findAll();
             var bestResult = rounds.stream()
-                    .filter(r -> r.getGamer().equals(gamer))
+                    .filter(r -> r.getGamer().equals(currentUser.get()))
                     .sorted(Comparator.comparingInt(Round::getMoves))
                     .map(Round::getMoves)
                     .findFirst()
