@@ -8,7 +8,6 @@ import hackathon.code.mapper.RoundMapper;
 import hackathon.code.mapper.UserMapper;
 import hackathon.code.model.Leader;
 import hackathon.code.model.Round;
-import hackathon.code.model.User;
 import hackathon.code.repository.LeaderRepository;
 import hackathon.code.repository.RoundRepository;
 import hackathon.code.repository.UserRepository;

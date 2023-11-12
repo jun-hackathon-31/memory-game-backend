@@ -102,31 +102,24 @@ public class RoundsControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-//    @Test
-//    public void testCreate() throws Exception {
-//        var testUser = userRepository.findByName("admin")
-//                .orElseThrow(() -> new RuntimeException("User doesn't exist"));
-//
-//        var data = Map.of(
-//                "complexity", 4,
-//                "moves", faker.number().numberBetween(8, 30),
-//                "userName", testUser.getName()
-//        );
-//
-//        var request = post("/api/rounds")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(om.writeValueAsString(data));
-//
-//        mockMvc.perform(request)
-//                .andExpect(status().isCreated());
-//
-//        var round = roundRepository.findByGamer(testUser).get();
-//
-//        assertThat(round).isNotNull();
-//        assertThat(round.getComplexity()).isEqualTo(data.get("complexity"));
-//        assertThat(round.getMoves()).isEqualTo(data.get("moves"));
-//        assertThat(round.getGamer().getName()).isEqualTo(data.get("userName"));
-//    }
+    @Test
+    public void testCreate() throws Exception {
+        var testUser = userRepository.findByName("admin")
+                .orElseThrow(() -> new RuntimeException("User doesn't exist"));
+
+        var data = Map.of(
+                "complexity", 4,
+                "moves", faker.number().numberBetween(8, 30),
+                "userName", testUser.getName()
+        );
+
+        var request = post("/api/rounds")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(data));
+
+        mockMvc.perform(request)
+                .andExpect(status().isCreated());
+    }
 
     @Test
     public void testCreateWithInvalidComplexity() throws Exception {
