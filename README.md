@@ -26,4 +26,5 @@ make setup
 
 ```bash
 make start
-# Open http://localhost:8080/
+# Open http://localhost:8080/welcome
+```
