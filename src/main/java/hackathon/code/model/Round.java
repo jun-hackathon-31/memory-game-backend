@@ -34,6 +34,7 @@ public class Round implements BaseEntity {
     @NotNull
     private Integer moves;
 
+
     @ManyToOne(fetch = FetchType.EAGER)
     @NotNull
     private User gamer;
